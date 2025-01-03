@@ -5,8 +5,9 @@ layout: page
 
 <input id="photo" type="file">
 <div id="results"></div>
-<script src="https://cdn.jsdelivr.net/npm/@gradio/client"></script>
-<script>
+<script type="module">
+  import { client } from 'https://cdn.jsdelivr.net/npm/@gradio/client@2.3.1/+esm'
+
   async function readAndPredict() {
     try {
       const fileInput = document.getElementById("photo");
@@ -14,20 +15,23 @@ layout: page
         throw new Error("No file selected.");
       }
 
-      const client = await GradioClient.connect("Furiek/animal_detector");
+      // Show loading state
+      document.getElementById("results").innerHTML = "Loading...";
 
+      const gradioClient = await client("Furiek/animal_detector");
       const file = fileInput.files[0];
-      const blob = new Blob([file], { type: file.type });
 
-      const result = await client.predict("/predict", { img: blob });
+      const result = await gradioClient.predict("/predict", { 
+        data: [file],
+      });
 
       console.log("Prediction Result:", result);
 
-      if (result?.data?.label) {
+      if (result.data) {
         document.getElementById("results").innerHTML = `
           <br/>
           <img src="${URL.createObjectURL(file)}" width="300">
-          <p>Prediction: ${result.data.label}</p>
+          <p>Prediction: ${result.data}</p>
         `;
       } else {
         throw new Error("Unexpected API response format.");
