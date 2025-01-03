@@ -5,9 +5,8 @@ layout: page
 
 <input id="photo" type="file">
 <div id="results"></div>
-<script type="module">
-  import { client } from 'https://esm.sh/@gradio/client@1.5.2'
-
+<script src="https://unpkg.com/@gradio/client@4.2.0/dist/index.min.js"></script>
+<script>
   async function readAndPredict() {
     try {
       const fileInput = document.getElementById("photo");
@@ -18,21 +17,19 @@ layout: page
       // Show loading state
       document.getElementById("results").innerHTML = "Loading...";
 
-      const gradioClient = await client("https://furiek-animal-detector.hf.space");
+      const client = await Client.connect("Furiek/animal_detector");
       const file = fileInput.files[0];
 
-      const result = await gradioClient.predict(
-        "/predict",
-        [file]
-      );
+      const result = await client.predict("/predict", { 
+        img: file
+      });
 
       console.log("Prediction Result:", result);
 
       document.getElementById("results").innerHTML = `
         <br/>
         <img src="${URL.createObjectURL(file)}" width="300">
-        <p>Predicted: ${result.data.label}</p>
-        <p>Confidence: ${(result.data.confidences[0].confidence * 100).toFixed(2)}%</p>
+        <p>Prediction: ${result.data}</p>
       `;
     } catch (error) {
       console.error("Error:", error);
