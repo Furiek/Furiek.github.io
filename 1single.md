@@ -1,7 +1,9 @@
 ---
 title: 1. Animals-10 Classifier
-layout: page
 ---
+
+# Animals-10 Classifier
+
 <input id="photo" type="file">
 <div id="results"></div>
 <script type="module">
