@@ -5,9 +5,8 @@ layout: page
 
 <input id="photo" type="file">
 <div id="results"></div>
-<script type="module">
-  import { Client } from "@gradio/client";
-
+<script src="https://cdn.jsdelivr.net/npm/@gradio/client"></script>
+<script>
   async function readAndPredict() {
     try {
       const fileInput = document.getElementById("photo");
@@ -15,7 +14,7 @@ layout: page
         throw new Error("No file selected.");
       }
 
-      const client = await Client.connect("Furiek/animal_detector");
+      const client = await GradioClient.connect("Furiek/animal_detector");
 
       const file = fileInput.files[0];
       const blob = new Blob([file], { type: file.type });
@@ -41,4 +40,3 @@ layout: page
 
   document.getElementById("photo").addEventListener("change", readAndPredict);
 </script>
-
