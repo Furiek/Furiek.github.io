@@ -17,7 +17,8 @@ layout: page
       // Show loading state
       document.getElementById("results").innerHTML = "Loading...";
 
-      const client = await Client.connect("Furiek/animal_detector");
+      // Note the change here from Client to GradioClient
+      const client = await GradioClient.connect("Furiek/animal_detector");
       const file = fileInput.files[0];
 
       const result = await client.predict("/predict", { 
