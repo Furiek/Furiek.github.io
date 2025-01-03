@@ -6,7 +6,7 @@ layout: page
 <input id="photo" type="file">
 <div id="results"></div>
 <script type="module">
-  import { client } from 'https://cdn.jsdelivr.net/npm/@gradio/client@2.3.1/+esm'
+  import { client } from 'https://esm.sh/@gradio/client@1.5.2'
 
   async function readAndPredict() {
     try {
@@ -18,24 +18,22 @@ layout: page
       // Show loading state
       document.getElementById("results").innerHTML = "Loading...";
 
-      const gradioClient = await client("Furiek/animal_detector");
+      const gradioClient = await client("https://furiek-animal-detector.hf.space");
       const file = fileInput.files[0];
 
-      const result = await gradioClient.predict("/predict", { 
-        data: [file],
-      });
+      const result = await gradioClient.predict(
+        "/predict",
+        [file]
+      );
 
       console.log("Prediction Result:", result);
 
-      if (result.data) {
-        document.getElementById("results").innerHTML = `
-          <br/>
-          <img src="${URL.createObjectURL(file)}" width="300">
-          <p>Prediction: ${result.data}</p>
-        `;
-      } else {
-        throw new Error("Unexpected API response format.");
-      }
+      document.getElementById("results").innerHTML = `
+        <br/>
+        <img src="${URL.createObjectURL(file)}" width="300">
+        <p>Predicted: ${result.data.label}</p>
+        <p>Confidence: ${(result.data.confidences[0].confidence * 100).toFixed(2)}%</p>
+      `;
     } catch (error) {
       console.error("Error:", error);
       document.getElementById("results").innerHTML = `<p>Error: ${error.message}</p>`;
