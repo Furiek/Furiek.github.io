@@ -1,5 +1,7 @@
 {
   "devDependencies": {
-    "@gradio/client": "^1.8.0"
+    "@gradio/client": "^1.8.0",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1"
   }
 }

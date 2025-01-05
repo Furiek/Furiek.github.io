@@ -1,42 +1,23 @@
 ---
-title: 1. Animals-10 Classifier
+title: Animals-10 Classifier
 layout: page
 ---
 
-<input id="photo" type="file">
+<h1>Animals-10 Classifier</h1>
+<p>Classifying a hardcoded image file...</p>
 <div id="results"></div>
-<script src="https://unpkg.com/@gradio/client@4.2.0/dist/index.min.js"></script>
+
+<script src="module"></script>
 <script>
-  async function readAndPredict() {
-    try {
-      const fileInput = document.getElementById("photo");
-      if (!fileInput.files[0]) {
-        throw new Error("No file selected.");
-      }
+    import { Client } from "@gradio/client";
 
-      // Show loading state
-      document.getElementById("results").innerHTML = "Loading...";
+    const response_0 = await fetch("https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png");
+    const exampleImage = await response_0.blob();
+                            
+    const client = await Client.connect("Furiek/animal_detector");
+    const result = await client.predict("/predict", { 
+                    img: exampleImage, 
+    });
 
-      // Note the change here from Client to GradioClient
-      const client = await GradioClient.connect("Furiek/animal_detector");
-      const file = fileInput.files[0];
-
-      const result = await client.predict("/predict", { 
-        img: file
-      });
-
-      console.log("Prediction Result:", result);
-
-      document.getElementById("results").innerHTML = `
-        <br/>
-        <img src="${URL.createObjectURL(file)}" width="300">
-        <p>Prediction: ${result.data}</p>
-      `;
-    } catch (error) {
-      console.error("Error:", error);
-      document.getElementById("results").innerHTML = `<p>Error: ${error.message}</p>`;
-    }
-  }
-
-  document.getElementById("photo").addEventListener("change", readAndPredict);
+    console.log(result.data);
 </script>
